@@ -135,7 +135,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 
 		super(parent);
 		setConfigLocations(configLocations);
-		//刷新容器方法
+		//刷新容器方法，测试
 		if (refresh) {
 			refresh();
 		}

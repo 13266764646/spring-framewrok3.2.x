@@ -30,6 +30,9 @@ import org.springframework.context.ApplicationListener;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+//initApplicationEventMulticaster的方式比较简单，无非考虑两种情况:
+// 	如果用户自定义了事件广播器，那么使用用户自定义的事件广播器。
+// 如果用户没有自定义事件广播器，那么使用默认的ApplicationEventMulticaster。
 public interface ApplicationEventMulticaster {
 
 	/**

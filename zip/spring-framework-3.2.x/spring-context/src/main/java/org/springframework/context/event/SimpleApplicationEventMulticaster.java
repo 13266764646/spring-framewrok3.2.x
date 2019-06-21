@@ -82,6 +82,9 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
 
 
 	@SuppressWarnings("unchecked")
+	//当产生Spring事件发生的时候会默认使用SimpleApplicationEventMulticaster的multicastEvent来广播事件，
+	// 遍历所有监听器，并使用监听器中的onApplicationEvent方法来进行监听器的处理。
+	// 而对于每个监听器来说其实都可以获取到产生的事件，但是是否进行处理则由事件监听器来决定。
 	public void multicastEvent(final ApplicationEvent event) {
 		for (final ApplicationListener listener : getApplicationListeners(event)) {
 			Executor executor = getTaskExecutor();

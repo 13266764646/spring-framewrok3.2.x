@@ -214,11 +214,11 @@ public class GenericConversionService implements ConfigurableConversionService {
 	 * Hook method to lookup the converter for a given sourceType/targetType pair.
 	 * First queries this ConversionService's converter cache.
 	 * On a cache miss, then performs an exhaustive search for a matching converter.
-	 * If no converter matches, returns the default converter.
-	 * @param sourceType the source type to convert from
-	 * @param targetType the target type to convert to
-	 * @return the generic converter that will perform the conversion,
-	 * or {@code null} if no suitable converter was found
+	 * 	 * If no converter matches, returns the default converter.
+	 * 	 * @param sourceType the source type to convert from
+	 * 	 * @param targetType the target type to convert to
+	 * 	 * @return the generic converter that will perform the conversion,
+	 * 	 * or {@code null} if no suitable converter was found
 	 * @see #getDefaultConverter(TypeDescriptor, TypeDescriptor)
 	 */
 	protected GenericConverter getConverter(TypeDescriptor sourceType, TypeDescriptor targetType) {

@@ -227,10 +227,14 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(
 			final String name, final Class<T> requiredType, final Object[] args, boolean typeCheckOnly)
 			throws BeansException {
-
+		//提取对应的beanName  transform使改变形态
 		final String beanName = transformedBeanName(name);
 		Object bean;
-
+		//检查缓存中或者实例工厂中是否有对应的实例
+		//为什么首先会使用这段代码那，因为在创建单例bean的时候会存在依赖注入的情况，
+		//而在创建依赖的时候为了避免循环依赖，spring创建bean的原则是不等bean创建完成就会创建bean的ObectFactory提早曝光，
+		//也就是将ObjectFactory加入到缓存中，一旦下个bean创建时候需要来上个bean则至直接使用，
+		//直接尝试从缓存获取或者singletonFactories中的ObjectFactory中获取
 		// Eagerly check singleton cache for manually registered singletons.
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {
@@ -243,6 +247,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					logger.debug("Returning cached instance of singleton bean '" + beanName + "'");
 				}
 			}
+			//返回对应的实例，有时候存在诸如BeanFactory的情况并不是直接放回实例本省而是返回指定方法返回的实例
 			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 		}
 

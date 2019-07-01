@@ -95,6 +95,8 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 	 * @see org.springframework.beans.factory.FactoryBean#getObject()
 	 */
 	protected Object getObjectFromFactoryBean(FactoryBean<?> factory, String beanName, boolean shouldPostProcess) {
+		//如果是单例模式，那就必须要保证全局唯一，同时，也因为是单例的，所以不必重复创建，
+		//可以使用缓存来提高性能，也就是说已经加载过就要记录下来以便下次复用，否则的话就直接获取了。
 		if (factory.isSingleton() && containsSingleton(beanName)) {
 			synchronized (getSingletonMutex()) {
 				Object object = this.factoryBeanObjectCache.get(beanName);
@@ -109,6 +111,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 					else {
 						if (object != null && shouldPostProcess) {
 							try {
+								//调用ObjectFactory的后处理器
 								object = postProcessObjectFromFactoryBean(object, beanName);
 							}
 							catch (Throwable ex) {
@@ -116,6 +119,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 										"Post-processing of FactoryBean's singleton object failed", ex);
 							}
 						}
+						//记录下来以便于下次复用
 						this.factoryBeanObjectCache.put(beanName, (object != null ? object : NULL_OBJECT));
 					}
 				}
@@ -126,6 +130,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 			Object object = doGetObjectFromFactoryBean(factory, beanName);
 			if (object != null && shouldPostProcess) {
 				try {
+					//调用objectFactory的后处理器
 					object = postProcessObjectFromFactoryBean(object, beanName);
 				}
 				catch (Throwable ex) {
@@ -150,10 +155,12 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 		Object object;
 		try {
 			if (System.getSecurityManager() != null) {
+				//需要权限验证
 				AccessControlContext acc = getAccessControlContext();
 				try {
 					object = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
 						public Object run() throws Exception {
+							//直接调用getObject方法
 								return factory.getObject();
 							}
 						}, acc);

@@ -41,6 +41,7 @@ package org.springframework.transaction;
  * @see org.springframework.transaction.interceptor.TransactionInterceptor
  * @see org.springframework.transaction.interceptor.TransactionProxyFactoryBean
  */
+//2019-07-15 事务Transaction的理解(一) https://blog.csdn.net/weixin_42074152/article/details/83301601
 public interface PlatformTransactionManager {
 
 	/**

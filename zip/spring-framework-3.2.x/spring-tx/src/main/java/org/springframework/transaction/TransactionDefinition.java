@@ -49,6 +49,7 @@ public interface TransactionDefinition {
 	 * <p>This is typically the default setting of a transaction definition,
 	 * and typically defines a transaction synchronization scope.
 	 */
+	//如果当前没有事务，就新建一个事务，如果已经存在一个事务中，加入到这个事务中。这是最常见的选择。
 	int PROPAGATION_REQUIRED = 0;
 
 	/**
@@ -70,6 +71,7 @@ public interface TransactionDefinition {
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#setTransactionSynchronization
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#SYNCHRONIZATION_ON_ACTUAL_TRANSACTION
 	 */
+	//支持当前事务，如果当前没有事务，就以非事务方式执行。
 	int PROPAGATION_SUPPORTS = 1;
 
 	/**
@@ -78,6 +80,7 @@ public interface TransactionDefinition {
 	 * <p>Note that transaction synchronization within a {@code PROPAGATION_MANDATORY}
 	 * scope will always be driven by the surrounding transaction.
 	 */
+	//使用当前的事务，如果当前没有事务，就抛出异常。
 	int PROPAGATION_MANDATORY = 2;
 
 	/**
@@ -93,6 +96,7 @@ public interface TransactionDefinition {
 	 * and resumed appropriately.
 	 * @see org.springframework.transaction.jta.JtaTransactionManager#setTransactionManager
 	 */
+	//新建事务，如果当前存在事务，把当前事务挂起
 	int PROPAGATION_REQUIRES_NEW = 3;
 
 	/**
@@ -108,6 +112,7 @@ public interface TransactionDefinition {
 	 * will be suspended and resumed appropriately.
 	 * @see org.springframework.transaction.jta.JtaTransactionManager#setTransactionManager
 	 */
+	//以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。
 	int PROPAGATION_NOT_SUPPORTED = 4;
 
 	/**
@@ -116,6 +121,7 @@ public interface TransactionDefinition {
 	 * <p>Note that transaction synchronization is <i>not</i> available within a
 	 * {@code PROPAGATION_NEVER} scope.
 	 */
+	//以非事务方式执行，如果当前存在事务，则抛出异常。
 	int PROPAGATION_NEVER = 5;
 
 	/**
@@ -129,6 +135,8 @@ public interface TransactionDefinition {
 	 * nested transactions as well.
 	 * @see org.springframework.jdbc.datasource.DataSourceTransactionManager
 	 */
+	//如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与PROPAGATION_REQUIRED类似的操
+   //当使用PROPAGATION_NESTED时，底层的数据源必须基于JDBC 3.0，并且实现者需要支持保存点事务机制。
 	int PROPAGATION_NESTED = 6;
 
 
@@ -148,6 +156,10 @@ public interface TransactionDefinition {
 	 * retrieved an invalid row.
 	 * @see java.sql.Connection#TRANSACTION_READ_UNCOMMITTED
 	 */
+	//1. 未授权读取（Read Uncommitted）：也称未提交读。防止更新丢失（这不对应一级锁吗），
+	// 如果一个事务已经开始写数据则另外一个数据则不允许同时进行写操作但允许其他事务读此行数据。
+	// 该隔离级别可以通过“排他写锁”实现。事务隔离的最低级别，仅可保证不读取物理损坏的数据。
+	// 与READ COMMITTED 隔离级相反，它允许读取已经被其它用户修改但尚未提交确定的数据。
 	int ISOLATION_READ_UNCOMMITTED = Connection.TRANSACTION_READ_UNCOMMITTED;
 
 	/**
@@ -157,6 +169,10 @@ public interface TransactionDefinition {
 	 * with uncommitted changes in it.
 	 * @see java.sql.Connection#TRANSACTION_READ_COMMITTED
 	 */
+	//授权读取（Read Committed）：也称提交读。1之上防止脏读取（这不对应二级锁吗）。
+	// 这可以通过“瞬间共享读锁”和“排他写锁”实现，读取数据的事务允许其他事务继续访问该行数据，
+	// 但是未提交写事务将会禁止其他事务访问该行。SQL Server 默认的级别。
+	// 在此隔离级下，SELECT 命令不会返回尚未提交（Committed） 的数据，也不能返回脏数据
 	int ISOLATION_READ_COMMITTED = Connection.TRANSACTION_READ_COMMITTED;
 
 	/**
@@ -168,6 +184,10 @@ public interface TransactionDefinition {
 	 * getting different values the second time (a "non-repeatable read").
 	 * @see java.sql.Connection#TRANSACTION_REPEATABLE_READ
 	 */
+	//3. 可重复读取（Repeatable Read）：2之上防止不可重复读取（这不对应三级锁吗）。
+	// 但是有时可能出现幻影数据，这可以通过“共享读锁”和“排他写锁”实现，读取数据事务将会禁止写事务（但允许读事务），
+	// 写事务则禁止任何其他事务。在此隔离级下，用SELECT 命令读取的数据在整个命令执行过程中不会被更改。
+	// 此选项会影响系统的效能，非必要情况最好不用此隔离级。
 	int ISOLATION_REPEATABLE_READ = Connection.TRANSACTION_REPEATABLE_READ;
 
 	/**
@@ -181,6 +201,10 @@ public interface TransactionDefinition {
 	 * in the second read.
 	 * @see java.sql.Connection#TRANSACTION_SERIALIZABLE
 	 */
+	//4. 串行（Serializable）：也称可串行读（这不对应两段锁吗）。提供严格的事务隔离，
+	// 它要求事务序列化执行，事务只能一个接着一个地执行，但不能并发执行。
+	// 如果仅仅通过 “行级锁”是无法实现事务序列化的，必须通过其他机制保证新插入的数据不会被刚执行查询操作事务访问到。
+	// 事务隔离的最高级别，事务之间完全隔离。如果事务在可串行读隔离级别上运行，则可以保证任何并发重叠事务均是串行的。
 	int ISOLATION_SERIALIZABLE = Connection.TRANSACTION_SERIALIZABLE;
 
 
@@ -199,6 +223,7 @@ public interface TransactionDefinition {
 	 * @see #PROPAGATION_REQUIRED
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager#isActualTransactionActive()
 	 */
+	//返回事务的传播行为
 	int getPropagationBehavior();
 
 	/**
@@ -211,6 +236,7 @@ public interface TransactionDefinition {
 	 * will throw an exception when given any other level than {@link #ISOLATION_DEFAULT}.
 	 * @return the isolation level
 	 */
+	//返回事务的 隔离级别，事务管理器根据它来控制另外一个事务可以看到本事务内的哪些数据
 	int getIsolationLevel();
 
 	/**
@@ -222,6 +248,7 @@ public interface TransactionDefinition {
 	 * an exception when given any other timeout than {@link #TIMEOUT_DEFAULT}.
 	 * @return the transaction timeout
 	 */
+	//返回事务必须再多少秒内完成
 	int getTimeout();
 
 	/**
@@ -241,6 +268,7 @@ public interface TransactionDefinition {
 	 * @see org.springframework.transaction.support.TransactionSynchronization#beforeCommit(boolean)
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager#isCurrentTransactionReadOnly()
 	 */
+	//事务是否只读，事务管理器能够根据这个返回值进行优化，确保事务是只读的
 	boolean isReadOnly();
 
 	/**

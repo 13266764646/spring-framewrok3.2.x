@@ -89,6 +89,10 @@ public class BeanFactoryAdvisorRetrievalHelper {
 				}
 				else {
 					try {
+						//2.从工厂中获取cachedAdvisorBeanNames对应的bean
+						//在上述代码，可知，
+						// org.springframework.transaction.config.internalTransactionAdvisor这个名称对应bean为
+						// BeanFactoryTransactionAttributeSourceAdvisor类
 						advisors.add(this.beanFactory.getBean(name, Advisor.class));
 					}
 					catch (BeanCreationException ex) {

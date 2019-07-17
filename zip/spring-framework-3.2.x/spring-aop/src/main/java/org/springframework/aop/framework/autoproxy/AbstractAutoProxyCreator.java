@@ -358,9 +358,12 @@ public abstract class AbstractAutoProxyCreator extends ProxyConfig
 		}
 
 		// Create proxy if we have advice.
+		//1.获取当前类的所有切面拦截类，在2）中详细分析
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
+		//2.如果拦截类不为空，则需要创建当前类的代理类
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
+			//3.创建代理类，再3）中详细分析
 			Object proxy = createProxy(bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			return proxy;
@@ -449,7 +452,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyConfig
 	 */
 	protected Object createProxy(
 			Class<?> beanClass, String beanName, Object[] specificInterceptors, TargetSource targetSource) {
-
+		//1.创建proxyFactory proxy的生成主要就是在proxyFactory做的
 		ProxyFactory proxyFactory = new ProxyFactory();
 		// Copy our properties (proxyTargetClass etc) inherited from ProxyConfig.
 		proxyFactory.copyFrom(this);
@@ -462,7 +465,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyConfig
 				proxyFactory.addInterface(targetInterface);
 			}
 		}
-
+		//2.将当前的bean适合的advice，重新封装下，封装为Advisor类，然后添加到ProxyFactory中
 		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);
 		for (Advisor advisor : advisors) {
 			proxyFactory.addAdvisor(advisor);
@@ -592,6 +595,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyConfig
 	 * @throws BeansException in case of errors
 	 * @see #DO_NOT_PROXY
 	 * @see #PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS
+	 * 本方法为抽象方法，实现由子类AbstractAdvisorAutoProxyCreator实现
 	 */
 	protected abstract Object[] getAdvicesAndAdvisorsForBean(
 			Class<?> beanClass, String beanName, TargetSource customTargetSource) throws BeansException;

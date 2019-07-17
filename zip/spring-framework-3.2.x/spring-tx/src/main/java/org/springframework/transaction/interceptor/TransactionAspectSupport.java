@@ -242,6 +242,14 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	 * @return the return value of the method, if any
 	 * @throws Throwable propagated from the target invocation
 	 */
+//	事务功能的实现实际也是通过Spring代理来实现的。生成当前类的代理类，
+// 调用代理类的invoke()方法，在invoke()方法中调用TransactionInterceptor拦截器的invoke()方法
+//	    重要操作流程如下：
+//			 1）解析<tx:annotation-driven>，将InfrastructureAdvisorAutoProxyCreator注入到Spring容器中，该类的作用是在Spring创建bean实例的时候，
+// 				会执行其postProcessAfterInitialization()方法，生成bean实例的代理类
+//		    2）解析<tx:annotation-driven>，将BeanFactoryTransactionAttributeSourceAdvisor类注入到Spring容器中，该类的主要作用是作为一个Advisor添加到上述代理类中
+//		    3）BeanFactoryTransactionAttributeSourceAdvisor类拥有对TransactionInterceptor的依赖，TransactionInterceptor作为一个方法拦截器，负责对执行方法的拦截
+//		    4）当前类方法调用被拦截到TransactionInterceptor后，TransactionInterceptor会调用invoke方法，来真正实现事务功能
 	protected Object invokeWithinTransaction(Method method, Class targetClass, final InvocationCallback invocation)
 			throws Throwable {
 
@@ -249,7 +257,11 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		final TransactionAttribute txAttr = getTransactionAttributeSource().getTransactionAttribute(method, targetClass);
 		final PlatformTransactionManager tm = determineTransactionManager(txAttr);
 		final String joinpointIdentification = methodIdentification(method, targetClass);
-
+		//编程式事务和声明式事务的区别：
+		//弹簧提供了对编程式事务和声明式事务的支持，编程式事务允许用户在代码中精确定义事务的边界，而声明式事务（基于AOP）有助于用户将操作与事务规则进行解耦。 
+		//简单地说，编程式事务侵入到了业务代码里面，但是提供了更加详细的事务管理;而声明式事务由于基于AOP，所以既能起到事务管理的作用，又可以不影响业务代码的具体实现。
+		//原文：https://blog.csdn.net/qq_36987761/article/details/80727119
+		//1.声明式事务
 		if (txAttr == null || !(tm instanceof CallbackPreferringPlatformTransactionManager)) {
 			// Standard transaction demarcation with getTransaction and commit/rollback calls.
 			TransactionInfo txInfo = createTransactionIfNecessary(tm, txAttr, joinpointIdentification);
@@ -270,7 +282,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			commitTransactionAfterReturning(txInfo);
 			return retVal;
 		}
-
+		//2.编程式事务（实际与声明式一致）
 		else {
 			// It's a CallbackPreferringPlatformTransactionManager: pass a TransactionCallback in.
 			try {

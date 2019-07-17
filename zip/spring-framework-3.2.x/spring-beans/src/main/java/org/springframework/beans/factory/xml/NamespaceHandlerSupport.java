@@ -41,6 +41,10 @@ import org.springframework.beans.factory.config.BeanDefinitionHolder;
  * @see #registerBeanDefinitionParser(String, BeanDefinitionParser)
  * @see #registerBeanDefinitionDecorator(String, BeanDefinitionDecorator)
  */
+// 参看文档url:https://blog.csdn.net/qq_26323323/article/details/81948682
+// Transaction begin 2019-07-05
+// 1）<tx:annotation-driven/>注解的分析
+//        但凡这种注解，都有对应的解析器，从之前分析AOP功能的源码可知，解析器都实现了NamespaceHandlerSupport类，我们来获取下NamespaceHandlerSupport的实现类都有哪些
 public abstract class NamespaceHandlerSupport implements NamespaceHandler {
 
 	/**

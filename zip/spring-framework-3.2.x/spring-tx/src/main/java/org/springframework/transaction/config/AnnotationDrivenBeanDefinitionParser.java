@@ -79,7 +79,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 			registerTransactionAspect(element, parserContext);
 		}
 		else {
-			// mode="proxy"
+			// mode="proxy" 默认为proxy模式，所有要执行该句
 			AopAutoProxyConfigurer.configureAutoProxyCreator(element, parserContext);
 		}
 		return null;
@@ -109,13 +109,15 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 	private static class AopAutoProxyConfigurer {
 
 		public static void configureAutoProxyCreator(Element element, ParserContext parserContext) {
+			//在5）中单独分析该句代码的功能
 			AopNamespaceUtils.registerAutoProxyCreatorIfNecessary(parserContext, element);
-
+			//txAdvisorBeanName 值为org.springframework.transaction.config.internalTransactionAdvisor
 			String txAdvisorBeanName = TransactionManagementConfigUtils.TRANSACTION_ADVISOR_BEAN_NAME;
 			if (!parserContext.getRegistry().containsBeanDefinition(txAdvisorBeanName)) {
 				Object eleSource = parserContext.extractSource(element);
 
 				// Create the TransactionAttributeSource definition.
+				//1.注册类AnnotationTransactonAttributeSource到Spring中
 				RootBeanDefinition sourceDef = new RootBeanDefinition(
 						"org.springframework.transaction.annotation.AnnotationTransactionAttributeSource");
 				sourceDef.setSource(eleSource);
@@ -123,6 +125,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				String sourceName = parserContext.getReaderContext().registerWithGeneratedName(sourceDef);
 
 				// Create the TransactionInterceptor definition.
+				//2.注册类TransactionInterceptor到Spring中
 				RootBeanDefinition interceptorDef = new RootBeanDefinition(TransactionInterceptor.class);
 				interceptorDef.setSource(eleSource);
 				interceptorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
@@ -131,6 +134,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				String interceptorName = parserContext.getReaderContext().registerWithGeneratedName(interceptorDef);
 
 				// Create the TransactionAttributeSourceAdvisor definition.
+				//// 2.注册类BeanFactoryTransactionAttributeSourceAdvisor到Spring中
 				RootBeanDefinition advisorDef = new RootBeanDefinition(BeanFactoryTransactionAttributeSourceAdvisor.class);
 				advisorDef.setSource(eleSource);
 				advisorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);

@@ -54,11 +54,15 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 		List<Object> interceptorList = new ArrayList<Object>(config.getAdvisors().length);
 		boolean hasIntroductions = hasMatchingIntroductions(config, targetClass);
 		AdvisorAdapterRegistry registry = GlobalAdvisorAdapterRegistry.getInstance();
+		//1.遍历当期的bean的所有Advisor
+		//就当前示例而言，只有一个Advisor，就是之前创建的BeanFacotyTransactionAttributeSourceAdvisor
 		for (Advisor advisor : config.getAdvisors()) {
 			if (advisor instanceof PointcutAdvisor) {
 				// Add it conditionally.
 				PointcutAdvisor pointcutAdvisor = (PointcutAdvisor) advisor;
 				if (config.isPreFiltered() || pointcutAdvisor.getPointcut().getClassFilter().matches(targetClass)) {
+					//2.获取Advisor的Interceptor,也就是在分析<tx:annotation-driven>时
+					//被添加到BeanFactoryTransactionAttributeSourceAdvisor类的TransactionInterceptor类
 					MethodInterceptor[] interceptors = registry.getInterceptors(advisor);
 					MethodMatcher mm = pointcutAdvisor.getPointcut().getMethodMatcher();
 					if (MethodMatchers.matches(mm, method, targetClass, hasIntroductions)) {

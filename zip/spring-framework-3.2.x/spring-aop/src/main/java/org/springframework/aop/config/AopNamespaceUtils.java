@@ -54,7 +54,7 @@ public abstract class AopNamespaceUtils {
 
 	public static void registerAutoProxyCreatorIfNecessary(
 			ParserContext parserContext, Element sourceElement) {
-
+		// 主要是这句话
 		BeanDefinition beanDefinition = AopConfigUtils.registerAutoProxyCreatorIfNecessary(
 				parserContext.getRegistry(), parserContext.extractSource(sourceElement));
 		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);
@@ -72,7 +72,7 @@ public abstract class AopNamespaceUtils {
 
 	public static void registerAspectJAnnotationAutoProxyCreatorIfNecessary(
 			ParserContext parserContext, Element sourceElement) {
-
+		//注册行为主要内容
 		BeanDefinition beanDefinition = AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(
 				parserContext.getRegistry(), parserContext.extractSource(sourceElement));
 		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);

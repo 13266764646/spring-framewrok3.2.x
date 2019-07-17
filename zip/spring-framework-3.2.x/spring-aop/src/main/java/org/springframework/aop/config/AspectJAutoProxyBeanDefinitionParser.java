@@ -35,9 +35,12 @@ import org.springframework.beans.factory.xml.ParserContext;
  * @author Juergen Hoeller
  * @since 2.0
  */
+//    总结：通过以上的代码分析，可知，AspectJAutoProxyBeanDefinitionParser主要的功能就是将AnnotationAwareAspectJAutoProxyCreator
+//  注册到Spring容器中，把bean交给Spring去托管。
 class AspectJAutoProxyBeanDefinitionParser implements BeanDefinitionParser {
 
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
+		//1.注册proxy creator
 		AopNamespaceUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(parserContext, element);
 		extendBeanDefinition(element, parserContext);
 		return null;

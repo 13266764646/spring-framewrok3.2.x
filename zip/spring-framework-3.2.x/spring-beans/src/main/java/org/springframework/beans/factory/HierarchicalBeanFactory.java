@@ -28,6 +28,7 @@ package org.springframework.beans.factory;
  * @author Juergen Hoeller
  * @since 07.07.2003
  * @see org.springframework.beans.factory.config.ConfigurableBeanFactory#setParentBeanFactory
+ * 表示这些Bean是有继承关系的，也就是每个Bean有肯可能有父Bean。
  */
 public interface HierarchicalBeanFactory extends BeanFactory {
 

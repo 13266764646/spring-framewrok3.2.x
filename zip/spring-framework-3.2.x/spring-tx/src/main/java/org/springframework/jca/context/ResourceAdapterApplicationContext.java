@@ -54,8 +54,11 @@ public class ResourceAdapterApplicationContext extends GenericApplicationContext
 
 	@Override
 	protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		//BootstrapContextAwareProcessor:传递bootstrapContext到实现了bootStrapContextAware接口的spring bean。它在内部bean factory中自动注册。
 		beanFactory.addBeanPostProcessor(new BootstrapContextAwareProcessor(this.bootstrapContext));
+		//BootstrapContextAware:需要通知BootStrapContext的实现类。
 		beanFactory.ignoreDependencyInterface(BootstrapContextAware.class);
+		//BootstrapContext：提供一种机制，这种机制将一个BootStrap的上下文传递到一个资源适配器实例。
 		beanFactory.registerResolvableDependency(BootstrapContext.class, this.bootstrapContext);
 
 		// JCA WorkManager resolved lazily - may not be available.

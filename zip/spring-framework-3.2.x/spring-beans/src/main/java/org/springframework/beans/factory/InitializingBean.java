@@ -31,6 +31,7 @@ package org.springframework.beans.factory;
  * @see BeanFactory
  * @see org.springframework.beans.factory.support.RootBeanDefinition#getInitMethodName
  * @see org.springframework.context.ApplicationContextAware
+ * 2019-07-27 参看文档：https://www.cnblogs.com/zhangjianbin/p/9096909.html
  */
 public interface InitializingBean {
 
@@ -43,6 +44,8 @@ public interface InitializingBean {
 	 * @throws Exception in the event of misconfiguration (such
 	 * as failure to set an essential property) or if initialization fails.
 	 */
+	//这个方法是再Bean的属性都设置值后被调用，用于完成一些初始化工作。当然，再spring的配置文件中init-method的配置也是在
+	//Bean的属性都设置值后被调用，用于完成一些初始化工作，不过再执行顺序上，接口的方法先于配置。
 	void afterPropertiesSet() throws Exception;
 
 }

@@ -126,7 +126,7 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 		// for AspectJ aspects (which are not allowed to implement Serializable)!
 		setTransactionManagerBeanName((String) ois.readObject());
 		setTransactionManager((PlatformTransactionManager) ois.readObject());
-		setTransactionAttributeSource((TransactionAttributeSource) ois.readObject());
+		setTransactionAttributeSource(() ois.readObject());
 		setBeanFactory((BeanFactory) ois.readObject());
 	}
 

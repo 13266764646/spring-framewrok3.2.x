@@ -52,6 +52,14 @@ public interface NamespaceHandler {
 	 * construction but before any custom elements are parsed.
 	 * @see NamespaceHandlerSupport#registerBeanDefinitionParser(String, BeanDefinitionParser)
 	 */
+	//为了简化代码，我们一般会继承一个helper类： NamespaceHandlerSupport ，
+	// 然后在 init 方法中注册处理我们自定义节点的BeanDefinitionParser
+//	下面的示例告诉Spring由我们自定义的的 BeanParser 来处理xml中的 config 节点信息。
+//	public class NamespaceHandler extends NamespaceHandlerSupport {
+//		@Override
+//		public void init() {
+//			registerBeanDefinitionParser("config", new BeanParser());
+//		}
 	void init();
 
 	/**
@@ -89,6 +97,7 @@ public interface NamespaceHandler {
 	 * A {@code null} value is strictly speaking invalid, but will be leniently
 	 * treated like the case where the original bean definition gets returned.
 	 */
+	//decorate 装饰; 装潢; 粉刷; 油漆; 糊墙纸; 点缀; 装点
 	BeanDefinitionHolder decorate(Node source, BeanDefinitionHolder definition, ParserContext parserContext);
 
 }

@@ -50,6 +50,7 @@ public interface BeanFactoryAware extends Aware {
 	 * @throws BeansException in case of initialization errors
 	 * @see BeanInitializationException
 	 */
+	//实现了BeanFactoryAware接口的类，可以在该Bean被加载的过程中获取加载改Bean的BeanFactory，同时也可以获取这个BeanFactory中加载的其它Bean.
 	void setBeanFactory(BeanFactory beanFactory) throws BeansException;
 
 }

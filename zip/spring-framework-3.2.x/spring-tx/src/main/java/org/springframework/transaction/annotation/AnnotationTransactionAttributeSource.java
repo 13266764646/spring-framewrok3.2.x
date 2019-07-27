@@ -42,8 +42,8 @@ import org.springframework.util.ClassUtils;
  * @author Colin Sampaleanu
  * @author Juergen Hoeller
  * @since 1.2
- * @see Transactional
  * @see TransactionAnnotationParser
+ * @see Transactional
  * @see SpringTransactionAnnotationParser
  * @see Ejb3TransactionAnnotationParser
  * @see org.springframework.transaction.interceptor.TransactionInterceptor#setTransactionAttributeSource

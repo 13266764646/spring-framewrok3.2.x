@@ -446,6 +446,8 @@ public class BeanDefinitionParserDelegate {
 	 * Parses the supplied {@code &lt;bean&gt;} element. May return {@code null}
 	 * if there were errors during parse. Errors are reported to the
 	 * {@link org.springframework.beans.factory.parsing.ProblemReporter}.
+	 * 这段代码主要把id和name属性取出，若没有beanName属性的，则按照spring自己的规则生成beanName，
+	 * 然后将信息封装到BeanDefinitionHolder中。
 	 */
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele, BeanDefinition containingBean) {
 		String id = ele.getAttribute(ID_ATTRIBUTE);
@@ -587,6 +589,8 @@ public class BeanDefinitionParserDelegate {
 	 * @param beanName bean name
 	 * @param containingBean containing bean definition
 	 * @return a bean definition initialized according to the bean element attributes
+	 * 显示对class和parent属性进行了解析，然后创建了用来保存属性信息的GenericBeanDefinition对象。
+	 *  然后parseBeanDefinitionAttributes对各个属性进行了解析，
 	 */
 	public AbstractBeanDefinition parseBeanDefinitionAttributes(Element ele, String beanName,
 			BeanDefinition containingBean, AbstractBeanDefinition bd) {
@@ -1423,12 +1427,14 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	public BeanDefinition parseCustomElement(Element ele, BeanDefinition containingBd) {
-		String namespaceUri = getNamespaceURI(ele);
+		String namespaceUri = getNamespaceURI(ele);//1.获取到命名空间
+		//2.根据命名空间找到对应的命名空间处理器
 		NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
 		if (handler == null) {
 			error("Unable to locate Spring NamespaceHandler for XML schema namespace [" + namespaceUri + "]", ele);
 			return null;
 		}
+		//3.根据用户自定义的处理器进行解析
 		return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));
 	}
 
@@ -1510,7 +1516,7 @@ public class BeanDefinitionParserDelegate {
 	/**
 	 * Ges the local name for the supplied {@link Node}. The default implementation calls {@link Node#getLocalName}.
 	 * Subclasses may override the default implementation to provide a different mechanism for getting the local name.
-	 * @param node the {@code Node}
+			* @param node the {@code Node}
 	 */
 	public String getLocalName(Node node) {
 		return node.getLocalName();

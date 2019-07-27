@@ -666,6 +666,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		synchronized (this.beanDefinitionMap) {
 			oldBeanDefinition = this.beanDefinitionMap.get(beanName);
+			//这个方法中先判断是不是有相同名字的BeanDefinition已经注册过了，如果有，但是不荣许覆盖，那么只能让程序抛出异常。
 			if (oldBeanDefinition != null) {
 				if (!this.allowBeanDefinitionOverriding) {
 					throw new BeanDefinitionStoreException(beanDefinition.getResourceDescription(), beanName,
@@ -680,6 +681,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 			}
 			else {
+				//如果没有注册过，那就执行正常的注册过程，以beanName为key，beanDefinition为value保存再BeanDefinitionMap中。
 				this.beanDefinitionNames.add(beanName);
 				this.frozenBeanDefinitionNames = null;
 			}
@@ -719,8 +721,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		clearMergedBeanDefinition(beanName);
 
 		// Remove corresponding bean from singleton cache, if any. Shouldn't usually
-		// be necessary, rather just meant for overriding a context's default beans
-		// (e.g. the default StaticMessageSource in a StaticApplicationContext).
+		//		// be necessary, rather just meant for overriding a context's default beans
+		//		// (e.g. the default StaticMessageSource in a StaticApplicationContext).
 		destroySingleton(beanName);
 
 		// Reset all bean definitions that have the given bean as parent (recursively).

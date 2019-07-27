@@ -56,6 +56,19 @@ public interface BeanFactoryPostProcessor {
 	 * @param beanFactory the bean factory used by the application context
 	 * @throws org.springframework.beans.BeansException in case of errors
 	 */
+	//这个方法会被Spring在容器初始化过程中调用，调用时机是所有bean的定义信息都已经初始化好，
+	// 但是这些bean还没有实例化。
 	void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException;
+	//可以在Bean被创建之前，获取容器中的Bean的定义信息，并且可以进行修改。实现类中的postProcessBeanFactory方法只会
+	//被执行一次，且先于BeanPostProcesor接口的方法。
 
+//	4. Spring容器的扩展点
+//	前面两节简单介绍了扩展Spring的两种方式：基于XML和基于Java的配置。通过这两种方式，我们可以在运行时收集到用户的配置信息，同时向Spring注册实际处理这些配置信息的Bean。
+//
+//	但这些注册进去的Bean实际上是如何工作的呢？我们通过什么方式能使我们的程序逻辑和Spring的容器紧密合作并无缝插入到用户bean的生命周期中呢？
+//
+//	这里简单介绍Spring容器最常用的两个扩展点： BeanFactoryPostProcessor 和
+// BeanFactoryPostProcessor 提供了一个方法： postProcessBeanFactory 。
+//
+//这个方法会被Spring在容器初始化过程中调用，调用时机是所有bean的定义信息都已经初始化好，但是这些bean还没有实例化。。
 }

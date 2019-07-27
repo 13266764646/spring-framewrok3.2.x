@@ -52,6 +52,7 @@ import org.springframework.beans.BeansException;
  * @since 16 April 2001
  * @see HierarchicalBeanFactory
  * @see BeanFactoryUtils
+ * 表示这些Bean是可列表的
  */
 public interface ListableBeanFactory extends BeanFactory {
 

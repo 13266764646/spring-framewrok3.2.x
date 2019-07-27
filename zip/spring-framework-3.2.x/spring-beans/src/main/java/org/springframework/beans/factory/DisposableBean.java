@@ -39,6 +39,8 @@ public interface DisposableBean {
 	 * Exceptions will get logged but not rethrown to allow
 	 * other beans to release their resources too.
 	 */
+	//改方法会被Bean被销毁、生命周期结束之前被嗲用，用于做一些销毁的收尾工作。同样，spring的配置文件的destroy-method配置也
+	//完成同样的工作，不过再执行顺序上，接口的方法先于配置。
 	void destroy() throws Exception;
 
 }

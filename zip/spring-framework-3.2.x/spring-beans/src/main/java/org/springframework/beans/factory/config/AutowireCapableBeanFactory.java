@@ -55,6 +55,7 @@ import org.springframework.beans.factory.BeanFactory;
  * @see org.springframework.beans.factory.BeanFactoryAware
  * @see org.springframework.beans.factory.config.ConfigurableListableBeanFactory
  * @see org.springframework.context.ApplicationContext#getAutowireCapableBeanFactory()
+ * 接口定义Bean的自动装配规则。
  */
 public interface AutowireCapableBeanFactory extends BeanFactory {
 

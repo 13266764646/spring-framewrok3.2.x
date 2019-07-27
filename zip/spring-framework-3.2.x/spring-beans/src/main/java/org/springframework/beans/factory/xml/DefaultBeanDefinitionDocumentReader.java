@@ -93,11 +93,14 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * (or DTD, historically).
 	 * <p>Opens a DOM Document; then initializes the default settings
 	 * specified at the {@code <beans/>} level; then parses the contained bean definitions.
+	 * 该方法--根据spring DTD对Bean的定义规则解析Bean定义Document对象
 	 */
 	public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
 		this.readerContext = readerContext;
 		logger.debug("Loading bean definitions");
 		Element root = doc.getDocumentElement();
+		//具体的解析过程由BeanDefinitionParserDelegate实现，BeanDefinitionParserDelegate中定义了spring bean
+		//定义XML文件的各种元素（Delegate:代表、委派的意思）
 		doRegisterBeanDefinitions(root);
 	}
 
@@ -141,9 +144,12 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// then ultimately reset this.delegate back to its original (parent) reference.
 		// this behavior emulates a stack of delegates without actually necessitating one.
 		BeanDefinitionParserDelegate parent = this.delegate;
+		////具体的解析过程由BeanDefinitionParserDelegate实现，BeanDefinitionParserDelegate
+		// 中定义了Spring Bean定义XML文件的各种元素 (Delegate:代表、委派的意思)
 		this.delegate = createDelegate(this.readerContext, root, parent);
 
 		preProcessXml(root);
+		//从Document的根元素开始记性Bean定义的Document对象
 		parseBeanDefinitions(root, this.delegate);
 		postProcessXml(root);
 
@@ -173,7 +179,9 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * "import", "alias", "bean".
 	 * @param root the DOM root element of the document
 	 */
+	//该方法--使用Spring的Bean规则从Document的根元素开始进行Bean定义的Document对象
 	protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
+		//如果使用了Spring模式的XML命名空间
 		if (delegate.isDefaultNamespace(root)) {
 			NodeList nl = root.getChildNodes();
 			for (int i = 0; i < nl.getLength(); i++) {
@@ -194,6 +202,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 	}
 
+	//可以看到spring对import，alias，bean和beans做了不同的处理。
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
 		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
 			importBeanDefinitionResource(ele);
@@ -309,6 +318,9 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	/**
 	 * Process the given bean element, parsing the bean definition
 	 * and registering it with the registry.
+	 * 解析完配置文件，接下来便是BeanDefinition的注册了。为了不至于每次用到配置信息的时候都去解析一遍配置文件，我们需要将解析结果
+	 * 保存起来。而保存解析结果这个过程就是BeanDefinition的注册。既然是保存，那就需呀偶一个保存的容器，这个容器就是HashMap.
+	 * 于是BeanDefinition的注册就变成了将解析之后的BeanDefinition信息保存再HashMap中这样一个操作。
 	 */
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);

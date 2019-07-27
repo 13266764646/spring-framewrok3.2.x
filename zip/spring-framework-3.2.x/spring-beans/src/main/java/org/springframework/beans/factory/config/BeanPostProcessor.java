@@ -46,7 +46,8 @@ import org.springframework.beans.BeansException;
 //		不但要实现注册功能，而且还要实现对后处理器的激活操作，所以需要载入配置中的定义，并进行激活；而对于BeanPostProcessor并不需要马上调用，
 //		再说，硬编码的方式实现的功能是将后处理器提取并调用，这里并不需要调用，当然不需要考虑硬编码的方式了，这里的功能只需要将配置文件的BeanPostProcessor提取出来并注册进入beanFactory就可以了。
 public interface BeanPostProcessor {
-
+//实现了BeanPostProcessor接口的类，会在每个BeanPostProcessor接口的类，会再每个Bean初始化（即调用setter）之前和之后，分别调用这个类中的
+	//postProcessBeforeInitialization方法和postProcessAfterInitialization方法，实现初始化的逻辑控制。
 	/**
 	 * Apply this BeanPostProcessor to the given new bean instance <i>before</i> any bean
 	 * initialization callbacks (like InitializingBean's {@code afterPropertiesSet}
@@ -59,6 +60,8 @@ public interface BeanPostProcessor {
 	 * @throws org.springframework.beans.BeansException in case of errors
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet
 	 */
+	//postProcessBeforeInitialization会再bean实例化之后、初始化（如afterPropertiesSet方法）之前
+	//我们常用的 @Autowired 注解就是通过 postProcessBeforeInitialization 实现的（AutowiredAnnotationBeanPostProcessor）。
 	Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException;
 
 	/**
@@ -81,6 +84,7 @@ public interface BeanPostProcessor {
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet
 	 * @see org.springframework.beans.factory.FactoryBean
 	 */
+	//postProcessAfterInitialization则再bean初始化之后被调用
 	Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException;
 
 }

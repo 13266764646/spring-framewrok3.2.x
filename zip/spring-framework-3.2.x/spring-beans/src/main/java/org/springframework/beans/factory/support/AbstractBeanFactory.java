@@ -106,7 +106,7 @@ import org.springframework.util.StringValueResolver;
  * @see AbstractAutowireCapableBeanFactory#createBean
  * @see DefaultListableBeanFactory#getBeanDefinition
  */
-public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
+public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport  implements ConfigurableBeanFactory{
 
 	/** Parent bean factory, for bean inheritance support */
 	private BeanFactory parentBeanFactory;
@@ -516,15 +516,25 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	public boolean isTypeMatch(String name, Class<?> targetType) throws NoSuchBeanDefinitionException {
+		//转换beanName 这里我们可以知道我们的beanName为factoryBean
 		String beanName = transformedBeanName(name);
 		Class<?> typeToMatch = (targetType != null ? targetType : Object.class);
 
 		// Check manually registered singletons.
+		//因为我们这里用的AbstractApplicationContext的子类来从Spring容器中获取Bean
+		//获取beanName为factoryBeanLearn的Bean实例这里可以获取到Bean实例的
+		//这里有一个问题：使用AbstractApplicationContext的子类从Spring容器中获取Bean和
+		//使用BeanFactory的子类从容器中获取Bean有什么区别？这个可以思考一下
+		//参看文档2019-07-31 https://blog.csdn.net/qq_38070608/article/details/80423427
 		Object beanInstance = getSingleton(beanName, false);
 		if (beanInstance != null) {
+			//factoryBeanLearn是FactoryBean的一个实现类
 			if (beanInstance instanceof FactoryBean) {
+				//这里判断beanName是不是以&开头，这里明显不是这里可以想一下什么情况下会有&开头的Bean
 				if (!BeanFactoryUtils.isFactoryDereference(name)) {
+					//这里就是从factoryBeanLearn中获type类型，我们在下面会分析一下这个类
 					Class<?> type = getTypeForFactoryBean((FactoryBean<?>) beanInstance);
+					//从factoryBeanLearn中获取到type类型和我们传入的类型是不是同一种类型是的话直接返回
 					return (type != null && ClassUtils.isAssignable(typeToMatch, type));
 				}
 				else {
@@ -1396,7 +1406,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @param mbd the corresponding bean definition
 	 */
 	protected boolean isFactoryBean(String beanName, RootBeanDefinition mbd) {
-		Class<?> beanType = predictBeanType(beanName, mbd, FactoryBean.class);
+		Class<?> beanType = predictBeanType(beanName, mbd, FactoryBean.class);//predict预告，预言
 		return (beanType != null && FactoryBean.class.isAssignableFrom(beanType));
 	}
 

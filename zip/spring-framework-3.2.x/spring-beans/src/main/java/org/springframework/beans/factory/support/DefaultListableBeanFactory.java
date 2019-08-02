@@ -96,9 +96,8 @@ import org.springframework.util.StringUtils;
  * @see PropertiesBeanDefinitionReader
  * @see org.springframework.beans.factory.xml.XmlBeanDefinitionReader
  */
-@SuppressWarnings("serial")
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory
-		implements ConfigurableListableBeanFactory, BeanDefinitionRegistry, Serializable {
+implements ConfigurableListableBeanFactory, BeanDefinitionRegistry, Serializable{
 
 	private static Class<?> javaxInjectProviderClass = null;
 
@@ -290,6 +289,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			throw new NoUniqueBeanDefinitionException(requiredType, beanNames);
 		}
 		else if (getParentBeanFactory() != null) {
+			//一个重复的调用过程，只不过BeanFactory的实例变了
 			return getParentBeanFactory().getBean(requiredType);
 		}
 		else {
@@ -326,41 +326,57 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		if (!isConfigurationFrozen() || type == null || !allowEagerInit) {
 			return doGetBeanNamesForType(type, includeNonSingletons, allowEagerInit);
 		}
+		//先从缓存中获取
 		Map<Class<?>, String[]> cache =
 				(includeNonSingletons ? this.allBeanNamesByType : this.singletonBeanNamesByType);
 		String[] resolvedBeanNames = cache.get(type);
 		if (resolvedBeanNames != null) {
 			return resolvedBeanNames;
 		}
+		//调用doGetBeanNameForType方法获取beanName
 		resolvedBeanNames = doGetBeanNamesForType(type, includeNonSingletons, allowEagerInit);
+		//所传入的类能不能被当前类加载加载
 		if (ClassUtils.isCacheSafe(type, getBeanClassLoader())) {
+			//放入到缓存中，解析一次以后从缓存中获取
+			//这里对应到我们这里key是FacoryBeanService value是BeanFactoryLearn
+			//参看文档2019-07-30：https://blog.csdn.net/zknxx/article/details/79572387
 			cache.put(type, resolvedBeanNames);
 		}
 		return resolvedBeanNames;
 	}
+
 
 	private String[] doGetBeanNamesForType(Class<?> type, boolean includeNonSingletons, boolean allowEagerInit) {
 		List<String> result = new ArrayList<String>();
 
 		// Check all bean definitions.
 		String[] beanDefinitionNames = getBeanDefinitionNames();
+		//循环所有的beanName这个是在Spring容器启动解析Bean的时候放入到这个List中的
 		for (String beanName : beanDefinitionNames) {
 			// Only consider bean as eligible if the bean name
 			// is not defined as alias for some other bean.
+			//不是别名
 			if (!isAlias(beanName)) {
 				try {
+					//根据beanName获取RootBeanDefinition
 					RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 					// Only check bean definition if it is complete.
+					//RootBeanDefinition中的Bean不是抽象类、非延迟初始化
 					if (!mbd.isAbstract() && (allowEagerInit ||
 							((mbd.hasBeanClass() || !mbd.isLazyInit() || this.allowEagerClassLoading)) &&
 									!requiresEagerInitForType(mbd.getFactoryBeanName()))) {
 						// In case of FactoryBean, match object created by FactoryBean.
+						//是不是FactoryBean的子类
 						boolean isFactoryBean = isFactoryBean(beanName, mbd);
+						//这里我们其他的几个变量的意思都差不多，我们需要重点关注的是isTypeMatch这个方法
+						//如果isTypeMatch这个方法返回true的话，我们这个beanName即factoryBeanLearn放入到result中返回
 						boolean matchFound = (allowEagerInit || !isFactoryBean || containsSingleton(beanName)) &&
 								(includeNonSingletons || isSingleton(beanName)) && isTypeMatch(beanName, type);
 						if (!matchFound && isFactoryBean) {
 							// In case of FactoryBean, try to match FactoryBean instance itself next.
+							//如果不匹配，还是FactoryBean的子类这里会把beanName变成&beanName
 							beanName = FACTORY_BEAN_PREFIX + beanName;
+							//判断类型匹配不匹配
 							matchFound = (includeNonSingletons || mbd.isSingleton()) && isTypeMatch(beanName, type);
 						}
 						if (matchFound) {
@@ -392,6 +408,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 
 		// Check singletons too, to catch manually registered singletons.
+		//这里的Bean是Spring容器创建的特殊的几种类型的Bean 像Enironment
 		String[] singletonNames = getSingletonNames();
 		for (String beanName : singletonNames) {
 			// Only check if manually registered.

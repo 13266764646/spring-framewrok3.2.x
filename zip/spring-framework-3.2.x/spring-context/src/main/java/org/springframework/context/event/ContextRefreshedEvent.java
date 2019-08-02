@@ -26,6 +26,7 @@ import org.springframework.context.ApplicationContext;
  * @see ContextClosedEvent
  */
 @SuppressWarnings("serial")
+//ApplicationContext发送改事件时，表示改容器中所有的Bean都已经被装载完毕，此ApplicationContext已就绪可用
 public class ContextRefreshedEvent extends ApplicationContextEvent {
 
 	/**

@@ -133,10 +133,15 @@ public class FileSystemXmlApplicationContext extends AbstractXmlApplicationConte
 	 */
 	public FileSystemXmlApplicationContext(String[] configLocations, boolean refresh, ApplicationContext parent)
 			throws BeansException {
-
+		//为了动态的确定用那个加载器去加载我们配置文件
 		super(parent);
+		//告诉读取器配置文件放在哪里：定位，为了加载配置
 		setConfigLocations(configLocations);
+		//刷新
 		if (refresh) {
+			//refresh方法的作用是：在创建IOC容器前，如果已经有容器存在，则需要把已有的容器销毁和关闭，
+			//以保证在refresh之后使用的是新建立起来的IOC容器。refresh的作用类似于IOC容器的重启，
+			//在新建立好的容器中对容器进行初始化，对Bean定义资源进行载入
 			refresh();
 		}
 	}

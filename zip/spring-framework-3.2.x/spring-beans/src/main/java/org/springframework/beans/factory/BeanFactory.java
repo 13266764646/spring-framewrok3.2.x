@@ -111,6 +111,8 @@ import org.springframework.beans.BeansException;
  * 再BeanFactory里只对IOC容器的基本行为作了定义，根本不关心你的bean是如何定义增样加载的。
  * 正如我们只关心工厂里得到什么样的产品对象，至于工厂是怎么生产这些对象的，这个基本的接口不关心。
  */
+//bean工厂，是一个工厂（factory）,我们spring IOC容器的最顶层接口就是这个BeanFactory，它的作用是
+//	管理Bean，即实例化、定位、配置应用程序中的对象及简历这些对象间的依赖。
 public interface BeanFactory {
 
 	/**

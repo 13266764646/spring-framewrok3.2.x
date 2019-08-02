@@ -267,7 +267,7 @@ public class JndiObjectFactoryBean extends JndiObjectLocator
 			if (this.proxyInterfaces.length == 1) {
 				return this.proxyInterfaces[0];
 			}
-			else if (this.proxyInterfaces.length > 1) {
+			else if (this.proxyInterfaces.length > 1) {// Composite合成的; 混成的; 复合的;
 				return createCompositeInterface(this.proxyInterfaces);
 			}
 		}

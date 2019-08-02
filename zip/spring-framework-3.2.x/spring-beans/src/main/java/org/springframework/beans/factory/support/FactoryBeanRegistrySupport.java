@@ -62,6 +62,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 				}, getAccessControlContext());
 			}
 			else {
+				//看到这里是不是很熟悉了调用FactoryBean实例的getObjectType()方法
 				return factoryBean.getObjectType();
 			}
 		}

@@ -113,8 +113,8 @@ import org.springframework.util.StringUtils;
  * @see DefaultListableBeanFactory
  * @see BeanDefinitionRegistry
  */
-public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
-		implements AutowireCapableBeanFactory {
+public abstract class AbstractAutowireCapableBeanFactory  extends AbstractBeanFactory
+		implements AutowireCapableBeanFactory{
 
 	/** Strategy for creating bean instances */
 	private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();

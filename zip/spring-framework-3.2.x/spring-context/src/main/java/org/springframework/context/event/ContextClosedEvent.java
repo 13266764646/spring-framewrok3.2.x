@@ -26,6 +26,7 @@ import org.springframework.context.ApplicationContext;
  * @see ContextRefreshedEvent
  */
 @SuppressWarnings("serial")
+//ApplicationContext关闭事件，则context不能刷新和重启，从而所有的singletong bean 全部销毁
 public class ContextClosedEvent extends ApplicationContextEvent {
 
 	/**

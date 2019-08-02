@@ -27,6 +27,7 @@ import org.springframework.context.ApplicationContext;
  * @see ContextStoppedEvent
  */
 @SuppressWarnings("serial")
+//生命周期beans的启动信号
 public class ContextStartedEvent extends ApplicationContextEvent {
 
 	/**

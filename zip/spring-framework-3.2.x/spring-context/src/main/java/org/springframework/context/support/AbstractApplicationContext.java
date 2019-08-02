@@ -468,7 +468,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			// Prepare this context for refreshing.
 			//准备刷新的上下文环境，例如对系统属性或者环境变量进行准备及验证。
 			prepareRefresh();
-			//初始化BeanFactory，并进行XML文件读取，这一步之后，ClassPathXmlApplicationContext实际上就已经包含了BeanFactory所提供的功能，也就是可以进行Bean的提取等基础操作了。
+			//初始化BeanFactory，并进行XML文件读取，这一步之后，ClassPathXmlApplicationContext实际上就已经包含了BeanFactory所提供的功能，
+			// 也就是可以进行Bean的提取等基础操作了。
 			// Tell the subclass to refresh the internal bean factory.
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory(); //obtain是获取，得到
 			//   //对BeanFactory进行各种功能填充,@Qualifier与@Autowired这两个注解正是在这一步骤中增加的支持。

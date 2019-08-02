@@ -50,8 +50,13 @@ package org.springframework.beans.factory;
  * @see org.springframework.aop.framework.ProxyFactoryBean
  * @see org.springframework.jndi.JndiObjectFactoryBean
  */
+//工厂bean，是一个bean,作用是产生其他bean实例。通常情况下，这种bean没有什么特别的要求，
+//仅需要提供一个工厂方法，该方法用来返回其他bean实例。通常情况下，bean无须自己实现工厂模式，spring容器
+//担任工厂角色；但少数情况下，容器中的bean本身就是工厂，其作用是产生其他bean实例。
 public interface FactoryBean<T> {
-
+//FactoryBean是一个工厂Bean，可以生成某一个类型Bean实例，它最大的一个作用是：可以让我们自定义Bean的创建过程
+//参看https://blog.csdn.net/zknxx/article/details/79572387
+// 2019-07-31 查看文档：https://blog.csdn.net/zknxx/article/details/79572387
 	/**
 	 * Return an instance (possibly shared or independent) of the object
 	 * managed by this factory.
@@ -69,6 +74,7 @@ public interface FactoryBean<T> {
 	 * @throws Exception in case of creation errors
 	 * @see FactoryBeanNotInitializedException
 	 */
+	//返回对象实例
 	T getObject() throws Exception;
 
 	/**
@@ -90,6 +96,7 @@ public interface FactoryBean<T> {
 	 * or {@code null} if not known at the time of the call
 	 * @see ListableBeanFactory#getBeansOfType
 	 */
+	//Bean的类型
 	Class<?> getObjectType();
 
 	/**

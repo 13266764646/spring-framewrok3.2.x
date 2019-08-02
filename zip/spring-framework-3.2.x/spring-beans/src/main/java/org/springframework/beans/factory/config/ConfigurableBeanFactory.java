@@ -47,7 +47,7 @@ import org.springframework.util.StringValueResolver;
  * @see org.springframework.beans.factory.ListableBeanFactory
  * @see ConfigurableListableBeanFactory
  */
-public interface ConfigurableBeanFactory extends HierarchicalBeanFactory {
+public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, SingletonBeanRegistry {
 
 	/**
 	 * Scope identifier for the standard singleton scope: "singleton".

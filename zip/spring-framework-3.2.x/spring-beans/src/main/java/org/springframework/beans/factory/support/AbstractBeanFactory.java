@@ -1079,7 +1079,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport  im
 	 * @param name the user-specified name
 	 * @return the transformed bean name
 	 */
-	protected String transformedBeanName(String name) {
+	protected String transformedBeanName(String name) {//transformed使改变形态
 		return canonicalName(BeanFactoryUtils.transformedBeanName(name));
 	}
 
@@ -1530,9 +1530,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport  im
 		if (object == null) {
 			// Return bean instance from factory.
 			//到这里已经明确知道beanInstance一定是FactoryBean类型
-			FactoryBean<?> factory = (FactoryBean<?>) beanInstance;
 			// Caches object obtained from FactoryBean if it is a singleton.
 			//containsBeanDefinition检测beanDefinitionMap中也就是在所有已经加载的类中检测是否定义beanName
+			FactoryBean<?> factory = (FactoryBean<?>) beanInstance;
 			if (mbd == null && containsBeanDefinition(beanName)) {
 				//如果指定beanName是子bean的话同时会合并父类的相关属性
 				//将存储XML配置文件的GernericeBeanDefinition转换为RootBeanDefinition

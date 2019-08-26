@@ -635,7 +635,7 @@ implements ConfigurableListableBeanFactory, BeanDefinitionRegistry, Serializable
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
 				if (isFactoryBean(beanName)) {
 					final FactoryBean<?> factory = (FactoryBean<?>) getBean(FACTORY_BEAN_PREFIX + beanName);
-					boolean isEagerInit;
+					boolean isEagerInit;//eager 热切的; 渴望的; 渴求的;
 					if (System.getSecurityManager() != null && factory instanceof SmartFactoryBean) {
 						isEagerInit = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
 							public Boolean run() {
